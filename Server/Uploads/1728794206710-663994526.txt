@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <conio.h>
+#include <dos.h>
+#include <string.h>
+
+void printText(int x, int y, int txtcolor, int txtbg, int text)
+{
+    gotoxy(x, y);
+    textcolor(txtcolor);
+    textbackground(txtbg);
+    cprintf("%c", text);
+}
+
+void printsquare(int x1, int x2,int y1,int y2, int txtcolor, int txtbg)
+{   
+    int i = 0,j=0;
+    printText(x1, y1, txtcolor, txtbg, 218);
+    printText(x2, y1, txtcolor, txtbg, 191);
+    printText(x1, y2, txtcolor, txtbg, 192);
+    printText(x2, y2, txtcolor, txtbg, 217);
+    for (i = x1 + 1; i < x2; i++)
+    {
+        printText(i, y1, txtcolor, txtbg, 196);
+    }
+    for (i = x1 + 1; i < x2; i++)
+    {
+        printText(i, y2, txtcolor, txtbg, 196);
+    }
+    for (j = y1 + 1; j < y2; j++)
+    {
+        printText(x1, j, txtcolor, txtbg, 179);
+    }
+    for (j = y1 + 1; j < y2; j++)
+    {
+        printText(x2, j, txtcolor, txtbg, 179);
+    }
+    for (j = y1 + 1; j < y2; j++)
+    {
+
+        for (i = x1 + 1; i < x2; i++)
+        {
+            printText(i, j, txtcolor, txtbg, 255);
+        }
+    }
+}
+
+void main()
+{
+    clrscr();
+    printsquare(1,80,1,24,14,1);
+    printsquare(2,39,2,11,15,0);
+    printsquare(41,79,2,11,2,4);
+    printsquare(2,39,13,23,3,5);
+    printsquare(41,79,13,23,6,7);
+    printsquare(20,59,7,17,8,6);
+    getch();
+}

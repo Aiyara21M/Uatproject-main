@@ -8,7 +8,7 @@ const navigation = [
   { name: "Home", href: "/index", current: false },
   { name: "Create Ticket", href: "/createticket", current: false },
   { name: "งานที่แจ้ง", href: "#", current: false },
-  { name: "Work list", href: "/mechanical", current: false },
+  { name: "Work list", href: "/Technician", current: false },
   // { name: 'งานคอมพิวเตอร์', href: '/computer', current: false },
   // { name: 'ticket', href: '/GetMsg', current: false },
 ];

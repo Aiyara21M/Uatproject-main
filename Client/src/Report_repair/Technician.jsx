@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../auth/auth";
 
-export default function Mechanical() {
+export default function Technician() {
   const navigate = useNavigate();
   document.title = "Ticket list Technician";
 
   const [getTicket, setTicket] = useState(null);
   const [currentPage, setcurrentPage] = useState(1);
   const [totalPages, settotalPages] = useState(0);
-    
+  const [loading,setLoading] =useState(false);
   
   const token = getToken();
   useEffect(() => {
@@ -19,15 +19,17 @@ export default function Mechanical() {
 
   
   const getdata = async (currentPage) => {
-    const response = await axios.post("http://localhost:4211/api/ticket",{currentPage}, {
+    setLoading(true);
+    const response = await axios.post("http://localhost:4211/api/ticket", { numpage: currentPage }, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
     });
     setTicket(response.data.data);
     setcurrentPage(response.data.currentPage)
     settotalPages(response.data.totalPages)
+    setLoading(false);
   };
 
   return (
@@ -59,7 +61,7 @@ export default function Mechanical() {
               >
                 <div
                   className="flex flex-col"
-                  onClick={() => navigate(`/mechanical/${getTicket._id}`)}
+                  onClick={() => navigate(`/Technician/${getTicket._id}`)}
                 >
                   <h3 className="font-bold">
                     {getTicket.HeadContent}
@@ -89,8 +91,10 @@ export default function Mechanical() {
               </li>
             ))
           ) : (
-            <li className="text-5xl">No Ticket</li>
-          )}
+            <li className="text-5xl"></li>
+          )
+          }
+         
           {/* Repeat the above <li> block for more tickets */}
         </ul>
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { socket } from "../socket";
+// import { socket } from "../socket";
 import { getDepartments, getToken, getUser } from "../auth/auth";
 
 
@@ -55,7 +55,7 @@ const Createticket = () => {
         formDataToSend,
         {
           headers: {
-            "Content-Type": "multipart/form-data",
+            // "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
