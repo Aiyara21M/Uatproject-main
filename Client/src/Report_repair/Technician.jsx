@@ -10,16 +10,13 @@ export default function Technician() {
   const [getTicket, setTicket] = useState(null);
   const [currentPage, setcurrentPage] = useState(1);
   const [totalPages, settotalPages] = useState(0);
-  const [loading,setLoading] =useState(false);
+
   
   const token = getToken();
   useEffect(() => {
     token ? getdata(currentPage) : setTicket([]);  
   }, [currentPage]);
-
-  
   const getdata = async (currentPage) => {
-    setLoading(true);
     const response = await axios.post("http://localhost:4211/api/ticket", { numpage: currentPage }, {
       headers: {
         "Content-Type": "application/json",
@@ -29,21 +26,32 @@ export default function Technician() {
     setTicket(response.data.data);
     setcurrentPage(response.data.currentPage)
     settotalPages(response.data.totalPages)
-    setLoading(false);
   };
 
   return (
     <div className="flex flex-col justify-center items-center h-[91vh] px-4 font-athiti">
-      <div className="flex flex-col bg-white justify-center items-center h-[95%] w-full md:w-[80%] rounded-lg shadow-lg overflow-hidden">
-        <div className="bg-gradient-to-b from-gray-800 to-gray-900 flex flex-col md:flex-row justify-between items-center w-full p-2 rounded-t-lg shadow-md">
-          <h2 className="text-lg text-white font-bold text-center md:text-left">
+      <div className="flex flex-col bg-white justify-center items-center h-[98%] w-full md:w-[80%] rounded-lg  overflow-hidden">
+        <div className="bg-white  flex flex-col md:flex-row justify-between items-center w-full p-2 rounded-t-lg border-0 border-b-4  border-b-gray-900 ">
+        
+          <h2 className="flex flex-row justify-center items-center text-lg text-gray-900 font-bold text-center md:text-left">
+          <div
+                onClick={() => navigate("../index")}
+                className="font-bold text-gray-900 text-md mr-6 cursor-pointer"
+              >
+                <img
+                  src="/img/clipart2061713.png"
+                  alt="My Image"
+                  className="h-0 md:h-6 "
+                />
+              </div>
+          <img src="/img/pngegg(3).png" alt="My Image"  className="h-10 md:h-10 pr-2"   />
             Ticket list ( Technician )
           </h2>
           <div className="relative w-full md:w-1/3 mt-2 md:mt-0">
             <input
               type="text"
-              placeholder="ค้นหา..."
-              className="w-full p-2 pl-10 pr-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-600"
+              placeholder="Search..."
+              className="w-full p-1 pl-10 pr-4 rounded-lg border border-sky-300 focus:border-white focus:outline-none focus:ring-2 focus:ring-gray-600"
             />
             <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400">
               🔍
@@ -51,59 +59,57 @@ export default function Technician() {
           </div>
         </div>
 
-        <ul className="flex flex-col items-center h-[90%] w-full md:w-[90%] mt-3 mb-auto overflow-y-auto p-2">
-          {/* Ticket items */}
-          {getTicket ? (
-            getTicket.map((getTicket) => (
-              <li
-                key={getTicket._id}
-                className="w-full mb-2 bg-gradient-to-b from-gray-200 to-gray-100 rounded-lg p-2 border-b hover:shadow-md transition-shadow"
-              >
-                <div
-                  className="flex flex-col"
-                  onClick={() => navigate(`/Technician/${getTicket._id}`)}
-                >
-                  <h3 className="font-bold">
-                    {getTicket.HeadContent}
-                    <span className="display-id text-gray-500">
-                      {"  Ticket Number - "}
-                       {getTicket.TicketNumber}
-                    </span>
-                  </h3>
-                  <p className="text-gray-600">
-                    <span className="created-on">
-                      Created {getTicket.CreateDate}
-                    </span>
-                    <span className="source source-2">
-                      {" "}
-                      ผู้แจ้ง - {getTicket.User}
-                    </span>
-                    <span className="rounded flex justify-end">
-                      <span className="text-green-700 bg-gray-300 p-1 rounded font-bold">
-                        {" "}
-                        {getTicket.action == true
-                          ? `Being Processed`
-                          : `Close`}{" "}
-                      </span>
-                    </span>
-                  </p>
-                </div>
-              </li>
-            ))
-          ) : (
-            <li className="text-5xl"></li>
-          )
-          }
-         
-          {/* Repeat the above <li> block for more tickets */}
-        </ul>
+        <ul className="flex flex-col items-center h-[90%] w-full md:w-[90%] mt-1 mb-auto overflow-y-auto ">
+  {/* Ticket items */}
+  {getTicket ? (
+    getTicket.map((getTicket) => (
+      <li
+        key={getTicket._id}
+        className="w-full mb-1 bg-white hover:bg-gray-100 rounded-lg p-2 border border-gray-300 transition-shadow"
+      >
+        <div
+          className="flex flex-col"
+          onClick={() => navigate(`/Technician/Mer__-${getTicket._id}`)}
+        >
+          <h3 className="font-bold">
+            {getTicket.HeadContent}
+            <span className="display-id text-gray-500">
+              {"  Ticket Number - "}
+              {getTicket.TicketNumber}
+            </span>
+          </h3>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <span className="text-gray-600">
+              <span className="created-on">Created {getTicket.CreateDate}</span>
+              <span className="source source-2"> {" "}ผู้แจ้ง - {getTicket.User}</span>
+            </span>
+            <span className="rounded mt-2 md:mt-0 self-end md:self-auto">
+              {getTicket.action === true ? (
+                <span className="text-gray-900 bg-sky-500 p-1 rounded font-bold">
+                  Ticket In Progress
+                </span>
+              ) : (
+                <span className="text-white bg-rose-600 p-1 rounded font-bold">
+                  Ticket Closed
+                </span>
+              )}
+            </span>
+          </div>
+        </div>
+      </li>
+    ))
+  ) : (
+    <li className="text-5xl"></li>
+  )}
+  {/* Repeat the above <li> block for more tickets */}
+</ul>
 
-        <div className="flex justify-between items-center w-full p-4 bg-white rounded-b-lg shadow-md">
+        <div className="flex justify-between items-center w-full p-1 bg-white rounded-b-lg border-0 border-t-4 border-t-gray-900">
           <button 
            disabled={currentPage <= 1}
            onClick={()=>setcurrentPage(currentPage=>currentPage-1)}
-          className="bg-white text-gray-600 font-bold py-2 px-4 rounded-lg shadow-lg border-1 border-gray-600 hover:shadow-xl hover:bg-gray-300  transition-all duration-300 transform {currentPage <= 1} hover:-translate-y-1">
-            Previous
+          className="bg-gray-900 text-white hover:text-gray-900 font-bold py-2 px-4 rounded-lg shadow-lg border-1 border-gray-600 hover:shadow-xl hover:bg-gray-300  transition-all duration-300 ">
+            Prev Page
           </button>
           <div className="flex items-center">
             <p>Page</p>
@@ -113,8 +119,8 @@ export default function Technician() {
           <button 
            disabled={currentPage >= totalPages}
            onClick={()=>setcurrentPage(currentPage=>currentPage+1)}
-          className="bg-white text-gray-600 font-bold py-2 px-4 rounded-lg shadow-lg border-1 border-gray-600 hover:shadow-xl hover:bg-gray-300  transition-all duration-300 transform hover:-translate-y-1">
-            Next
+          className="bg-gray-900 text-white hover:text-gray-900 font-bold py-2 px-4 rounded-lg shadow-lg border-1 border-gray-600 hover:shadow-xl hover:bg-gray-300  transition-all duration-300 ">
+            Next Page
           </button>
         </div>
       </div>

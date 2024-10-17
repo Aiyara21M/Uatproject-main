@@ -6,6 +6,7 @@ const path = require('path');
 
 exports.createdticket = async (req, res) => {
   try {
+    
     const jsonData = JSON.parse(req.body.jsonData); 
     const { HeadContent, Phone, action, Type,UUID,depart } = jsonData;
     let { content } = jsonData;
@@ -61,22 +62,22 @@ exports.createdticket = async (req, res) => {
         HeadContent:HeadContent,
         User:new ObjectId(UUID),
         UserDepartment:new ObjectId(depart),
-        content:content,
         Phone:Phone,
         action:action,
-        filename:filename,
         Audilog:[{
           detail :"CreateTicket",
           content:content,
           User:new ObjectId(UUID),
-          ModifyDate:new Date()
+          UserDepartment:new ObjectId(depart),
+          ModifyDate:new Date(),
+          filename:filename,
         }],
         CreateDate:new Date()
       })
      
     res.status(200).json({
       success: true,
-      message: 'File and data uploaded successfully',
+      message: 'Ticket Created Successfully.',
     })
     
 

@@ -8,7 +8,7 @@ import Technician from './Report_repair/Technician';
 import Computer from './Report_repair/Computer';
 import TicketNumber from './Report_repair/TicketNumber';
 import Createticket from './Report_repair/Createticket';
-import Menu_st from './Settings/Menu_st';
+import Menu_st from './Settings/Menu_Index';
 
 export default function Routers() {
 

@@ -19,9 +19,7 @@ export default function Profile() {
     const token = getToken(); 
     const UUID = getUser(); 
     
-
-
-    const fetchProfileData = async () => {
+    const getProfileData = async () => {
         try {
             const response = await axios.post(
                 'http://localhost:4211/api/getprofile',
@@ -42,20 +40,9 @@ export default function Profile() {
     };
 
     useEffect(() => {
-        fetchProfileData();
-        console.log(profileData);
+        getProfileData();
         
     }, []);
-
-
-
-    if (!profileData) {
-        return <div className='flex flex-col h-[91vh] w-full justify-center items-center'>                    <img 
-        src={`http://localhost:4211/Uploads/profileimg/loading-7528_256.gif`} 
-        className="w-50 h-50 rounded-full" 
-        alt={`Profile`} 
-    /></div>; 
-    }
 
     const age = calculateAge(profileData.birthdate); 
 

@@ -4,19 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../socket";
 
-const navigation = [
-  { name: "Home", href: "/index", current: false },
-  { name: "Create Ticket", href: "/createticket", current: false },
-  { name: "งานที่แจ้ง", href: "#", current: false },
-  { name: "Work list", href: "/Technician", current: false },
-  // { name: 'งานคอมพิวเตอร์', href: '/computer', current: false },
-  // { name: 'ticket', href: '/GetMsg', current: false },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
-
 export default function Navbar() {
   const navigate = useNavigate();
   const profileimg = getProfileimg();
@@ -25,36 +12,6 @@ export default function Navbar() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-  const notificationsRef = useRef(null);
-  const profileRef = useRef(null);
-
-  const nonerefresh = (e, href) => {
-    e.preventDefault();
-    navigate(href);
-  };
-
-  const toggleMenu = () => setIsOpen(!isOpen);
-  const toggleNotifications = () =>
-    setIsNotificationsOpen(!isNotificationsOpen);
-  const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
-
-  const handleNotificationClick = (e, notification) => {
-    e.preventDefault();
-    setIsNotificationsOpen(false);
-    console.log(notification);
-  };
-
-  const handleProfileClick = (e, action) => {
-    e.preventDefault();
-    setIsProfileOpen(false);
-    if (action === "logout") {
-      logout(() => navigate("/"));
-    } else if (action === "profile") {
-      nonerefresh(e, "/profile");
-    } else if (action === "settings") {
-      nonerefresh(e, "/settings");
-    }
-  };
 
   useEffect(() => {
     // Listen for alerts
@@ -62,7 +19,6 @@ export default function Navbar() {
       // ใช้ axios เพื่อดึงข้อมูล
       // setAlert(data.count > 0 ? data.count : null);
       console.log(data);
-      
     });
     return () => {
       socket.off("Getalert");
@@ -70,38 +26,9 @@ export default function Navbar() {
   }, []);
 
   const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: "Ticket",
-      sender: "NameSend",
-      senderInitial: "Img",
-      content: "Content",
-      time: "26 Sep 2024 - 11:05 AM",
-      senderImage:
-        "/api/_/users/16003914118/profile_image_no_blank?hashval=a8c1a8a039998718deac0685cec50ce4",
-      unread: true,
-    },
+   
     // Add more notifications as needed
   ]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        notificationsRef.current &&
-        !notificationsRef.current.contains(event.target)
-      ) {
-        setIsNotificationsOpen(false);
-      }
-      if (profileRef.current && !profileRef.current.contains(event.target)) {
-        setIsProfileOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
 
   // if (getUser()) {
   //   const UUID = getUser();
@@ -110,83 +37,94 @@ export default function Navbar() {
   //   };
   //   putAlert();
   // }
-
+  const notificationsRef = useRef(null);
+  const profileRef = useRef(null);
   const menuRef = useRef(null);
-
+  const RepairTicket = useRef(null);
+  const Managedata = useRef(null);
+  const Dashboard = useRef(null);
   const closeMenu = () => {
     setIsOpen(false);
   };
+  const [isRepairTicketOpen, setIsRepairTicketOpen] = useState(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
+  const [isManagedataOpen, setIsManagedataOpen] = useState(false);
 
-  const handleClickOutside = (event) => {
+  const closeAllMenus = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
-      closeMenu();
+      setIsOpen(false);
     }
+    if (
+      notificationsRef.current &&
+      !notificationsRef.current.contains(event.target)
+    ) {
+      setIsNotificationsOpen(false);
+    }
+    if (profileRef.current && !profileRef.current.contains(event.target)) {
+      setIsProfileOpen(false);
+    }
+
+
+    if (RepairTicket.current && !RepairTicket.current.contains(event.target)) {
+      RepairTicket.current.removeAttribute("open");
+    }
+  
+    // ปิดเมนู `Dashboard` หากคลิกนอกเมนู
+    if (Dashboard.current && !Dashboard.current.contains(event.target)) {
+      Dashboard.current.removeAttribute("open");
+    }
+  
+    // ปิดเมนู `Managedata` หากคลิกนอกเมนู
+    if (Managedata.current && !Managedata.current.contains(event.target)) {
+      Managedata.current.removeAttribute("open");
+    }
+
+
+   
+    
   };
 
   useEffect(() => {
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
+    document.addEventListener("mousedown", closeAllMenus);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("mousedown", closeAllMenus);
     };
-  }, [isOpen]);
+  }, []);
+
+
+
 
   if (!getUser()) {
     return null;
   }
 
   return (
-    <nav
-      className="sticky top-0 bg-white  z-50  hover:shadow-l md:rounded-b-xl transition-all duration-100 shadow-inner"
-      style={{ borderWidth: "0px" }}
-    >
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+    <nav className="sticky top-0 bg-white  z-50  hover:shadow-l md:rounded-full transition-all duration-100  border-0 border-b-2  border-b-gray-900 shadow-inner md:mx-4 ">
+      <div className="mx-auto max-w-7xl px-2 px-6 px-8">
         <div className="relative flex h-16 items-center justify-between font-athiti">
           {/* Mobile Menu Button */}
-          <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          {/* sm:hidden */}
+          <div className="absolute inset-y-0 left-0 flex items-center ">
             <button
-              onClick={toggleMenu}
+              onClick={() => {
+                isOpen === false ? setIsOpen(true) : "";
+              }}
               className="group relative inline-flex items-center justify-center rounded-md p-2 text-gray-800 hover:bg-gray-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400"
             >
               <span className="sr-only">Open main menu</span>
-              <Bars3Icon aria-hidden="true" className="block h-6 w-6" />
-              <XMarkIcon aria-hidden="true" className="hidden h-6 w-6" />
+              <img
+                alt="Your Company"
+                src={`http://localhost:4211/Uploads/logo/pngegg(2).png`}
+                className="h-9 w-auto"
+              />
+              {/* <Bars3Icon aria-hidden="true" className="block h-6 w-6" />
+              <XMarkIcon aria-hidden="true" className="hidden h-6 w-6" /> */}
             </button>
           </div>
 
           {/* Logo and Navigation Links */}
-          <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-            <div className="inline-flex items-center justify-center h-15 w-20 transition duration-300 px-4">
-              <img
-                alt="Your Company"
-                src={`http://localhost:4211/Uploads/logo/pngegg(2).png`}
-                className="h-15 w-auto"
-              />
-            </div>
-
-            <div className="hidden sm:ml-6 sm:block">
-              <div className="flex space-x-6">
-                {navigation.map((item) => (
-                  <a
-                    onClick={(e) => nonerefresh(e, item.href)}
-                    key={item.name}
-                    aria-current={item.current ? "page" : undefined}
-                    className={classNames(
-                      item.current
-                        ? ""
-                        : "text-gray-900 hover:bg-gray-900 hover:text-white hover:shadow-md",
-                      "py-2 px-3 text-lg font-medium transition duration-150 ease-in-out cursor-pointer rounded-lg font-athiti"
-                    )}
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-            </div>
+          <div className="flex  items-center justify-center">
+            <div className="inline-flex items-center justify-center h-15 w-20 transition duration-300 px-4"></div>
           </div>
 
           {/* Notification and Profile Menu */}
@@ -194,7 +132,7 @@ export default function Navbar() {
             {/* Notifications Button */}
             <div className="relative" ref={notificationsRef}>
               <button
-                onClick={toggleNotifications}
+                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                 className="relative rounded-full bg-gray-900 p-2 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-800 transition duration-150 ease-in-out"
               >
                 <span className="sr-only">View notifications</span>
@@ -230,9 +168,10 @@ export default function Navbar() {
                           className={`flex items-start p-2 ${
                             notification.unread ? "bg-gray-100" : ""
                           }`}
-                          onClick={(e) =>
-                            handleNotificationClick(e, notification)
-                          }
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setIsNotificationsOpen(false);
+                          }}
                         >
                           <div className="image-container mr-2">
                             <figure className="user-profile-pic avatar-text small profile-bg-2">
@@ -277,7 +216,7 @@ export default function Navbar() {
             {/* Profile Menu */}
             <div className="relative ml-3" ref={profileRef}>
               <button
-                onClick={toggleProfile}
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="relative flex rounded-full bg-gray-900 text-sm p-2 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-800 transition duration-150 ease-in-out"
               >
                 <span className="sr-only">Open user menu</span>
@@ -295,20 +234,31 @@ export default function Navbar() {
                     User Menu
                   </div>
                   <a
-                    href="#"
-                    onClick={(e) => handleProfileClick(e, "profile")}
+                    onClick={(e) => {
+                      e.preventDefault;
+                      setIsProfileOpen(false);
+                      navigate("/profile");
+                    }}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
                   >
                     Your Profile
                   </a>
                   <a
-                    onClick={(e) => handleProfileClick(e, "settings")}
+                    onClick={(e) => {
+                      e.preventDefault;
+                      setIsProfileOpen(false);
+                      navigate("/settings");
+                    }}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
                   >
                     Settings
                   </a>
                   <button
-                    onClick={(e) => handleProfileClick(e, "logout")}
+                    onClick={(e) => {
+                      e.preventDefault;
+                      setIsProfileOpen(false);
+                      logout(() => navigate("/"));
+                    }}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
                   >
                     Sign out
@@ -321,30 +271,139 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Navigation Menu */}
-      {isOpen && (
-        <div ref={menuRef} className="sm:hidden">
-          <div className="space-y-1 px-2 pb-3 pt-2">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                onClick={(e) => {
-                  nonerefresh(e, item.href);
-                  closeMenu(); // Close menu when an item is clicked
-                }}
-                aria-current={item.current ? "page" : undefined}
-                className={classNames(
-                  item.current
-                    ? "bg-gradient-to-b from-gray-800 to-gray-900 text-gray-800 font-semibold"
-                    : "text-gray-800 hover:bg-gray-900 hover:text-white font-medium",
-                  "block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti"
-                )}
-              >
-                {item.name}
-              </a>
-            ))}
-          </div>
+      <div
+        ref={menuRef}
+        className={`fixed inset-y-0 left-0  w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out transform ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="space-y-1 px-2 pb-3 pt-2">
+          <a
+            key="Home"
+            onClick={(e) => {
+              e.preventDefault;
+              navigate("/index");
+              closeMenu();
+            }}
+            className="text-gray-800 font-semibold hover:bg-gray-900 hover:text-white font-medium block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti"
+          >
+            Home
+          </a>
+
+          <details ref={Managedata}  >
+            <summary
+              className="text-gray-800 font-semibold hover:bg-gray-900 hover:text-white font-medium block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400"
+              style={{
+                listStyle: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
+              }} >
+              <div className="">Manage data</div>
+            </summary>
+            <div className="m-3 md:w-48 ">
+              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/pngegg.png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold">Employee</h3>
+              </div>
+
+              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/department.png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold">Department</h3>
+              </div>
+
+              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/pngegg(1).png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold">Sex</h3>
+              </div>
+
+              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/pngegg(5).png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold">Address</h3>
+              </div>
+            </div>
+          </details>
+
+         
+          <details ref={RepairTicket}  >
+            <summary
+              className="text-gray-800 font-semibold hover:bg-gray-900 hover:text-white font-medium block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400"
+              style={{
+                listStyle: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
+              }} >
+              <div className="">Repair Ticket</div>
+            </summary>
+            <div className="m-3 md:w-48 ">
+              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/pngegg.png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold">Employee</h3>
+              </div>
+
+              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/department.png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold">Department</h3>
+              </div>
+
+              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/pngegg(1).png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold">Sex</h3>
+              </div>
+
+              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/pngegg(5).png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold">Address</h3>
+              </div>
+            </div>
+          </details>
+
+
+
+
         </div>
-      )}
+      </div>
     </nav>
   );
 }

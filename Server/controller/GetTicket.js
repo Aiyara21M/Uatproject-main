@@ -2,6 +2,7 @@ require("dotenv").config();
 const { ObjectId } = require('mongodb');
 const mongoose = require("mongoose");
 const os = require('os');
+const moment = require('moment-timezone');
 
 exports.GetTicket = async (req, res) => {
     try {
@@ -45,39 +46,86 @@ exports.GetTicket = async (req, res) => {
         ])
         .toArray()
 
-        const Newdocs = docs.map((doc) => {
-        
-            const Newdate = new Intl.DateTimeFormat("th-TH", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              timeZone: "Asia/Bangkok",
-            }).format(new Date(doc.CreateDate));
-  
-            
-            return {
-              ...doc,
-              CreateDate: Newdate, 
-            };
-          });
+        docs.forEach(doc => {
+          doc.CreateDate = moment.tz(doc.CreateDate, 'Asia/Bangkok').format('DD/MM/YYYY HH:mm');
+        });
+
         
         console.log({
-            data: Newdocs,
-            currentPage: page,
-            totalPages: totalPages,
-            totalDocs: totalDocs.Ticket,
+          docs
           });
         res.status(200).json({
-            data: Newdocs,
+            data: docs,
             currentPage: page,
             totalPages: totalPages,
             totalDocs: totalDocs.Ticket,
           });
 
       } catch (error) {
+        console.error('Error fetching IP:', error);
+        res.status(500).json({ error: error });
+      }
+  };
+
+
+
+
+  exports.GetTicketID = async (req, res) => {
+    try {
+  
+  
+
+      const data = req.body.id.split('-');
+      const type=data[0]
+      const id=data[1]
+      const dbSearch= type == 'Mer__'? 'worklistmechanical':'worklistcomputer'
+
+        const ticket = await mongoose.connection.db
+        .collection(dbSearch)
+        .aggregate([
+            {
+              $match:{
+                "_id" : new ObjectId(id)
+            }
+          },
+          { $unwind: { path: "$Audilog", preserveNullAndEmptyArrays: true } },
+          {$sort:{
+              "Audilog.ModifyDate" :1
+          }},
+          { $lookup: { from: "profiles", localField: "Audilog.User", foreignField: "employeeid", as: "Audilog.User" } },
+           { $unwind: { path: "$Audilog.User", preserveNullAndEmptyArrays: true } },
+          { $lookup: { from: "departments", localField: "Audilog.UserDepartment", foreignField: "_id", as: "Audilog.UserDepartment" } },
+           { $unwind: { path: "$Audilog.UserDepartment", preserveNullAndEmptyArrays: true } },
+           {
+               $addFields:{
+                   "Audilog.User" : {$concat:["$Audilog.User.firstname"," ","$Audilog.User.lastname"]},
+                    "Audilog.profileimg":"$Audilog.User.profileimg",
+                  "Audilog.UserDepartment":"$Audilog.UserDepartment.department"
+               }
+           },
+           {
+               $group:{
+                   _id:"$_id",
+                   "TicketNumber" :{$first:"$TicketNumber"},
+                   Audilog:{$push:"$Audilog"},
+                   HeadContent:{$first:"$HeadContent"},
+                     CreateDate:{$first:"$CreateDate"},
+                     "Phone" : {$first:"$Phone"}
+               }
+           }
+        ])
+        .toArray()
+
+        ticket[0].CreateDate=moment.tz(ticket[0].CreateDate, 'Asia/Bangkok').format('DD/MM/YYYY HH:mm');
+        ticket[0].Audilog.forEach(log => {
+          log.ModifyDate = moment.tz(log.ModifyDate, 'Asia/Bangkok').format('DD/MM/YYYY HH:mm');
+        });
+
+      console.log(ticket[0]);
+      res.status(200).json(ticket[0]);
+
+      } catch (error) {
+       
         console.error('Error fetching IP:', error);
         res.status(500).json({ error: error });
       }

@@ -4,6 +4,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 // import { socket } from "../socket";
 import { getDepartments, getToken, getUser } from "../auth/auth";
+import { useNavigate } from "react-router-dom";
 
 
 const Createticket = () => {
@@ -14,13 +15,15 @@ const Createticket = () => {
     Type: "",
   });
 
-  const [content, setContent] = useState("");
+ 
   const [Load, setLoad] = useState(false);
+  const navigate= useNavigate();
   const inputRef = useRef(null);
   const quillRef = useRef(null);
   const token = getToken();
   const UUID = getUser();
   const depart = getDepartments();
+  const [content, setContent] = useState("");
   const [selectedFile, setSelectedFile] = useState(null); // State เพื่อเก็บไฟล์ที่เลือก
 
   const putData = (e) => {
@@ -77,10 +80,19 @@ const Createticket = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center h-[91vh] px-4 font-athiti">
-      <div className="flex flex-col bg-white items-center h-[95%] w-full md:w-[80%] rounded-lg overflow-hidden shadow-inner">
+    <div className="flex flex-col justify-center items-center h-[91vh] md:px-4 font-athiti ">
+      <div className="flex flex-col bg-white items-center h-full md:h-[95%] w-full md:w-[80%] rounded-lg overflow-hidden shadow-inner">
         <div className="flex flex-col w-full p-6 h-[100%] relative overflow-auto">
-          <h1 className="text-2xl font-bold mb-4">Create Ticket</h1>
+          <h1 className="text-2xl font-bold mb-4 flex flex-row  items-center">          <div
+                onClick={() => navigate("../index")}
+                className="font-bold text-gray-900 text-md mr-6 cursor-pointer"
+              >
+                <img
+                  src="/img/clipart2061713.png"
+                  alt="My Image"
+                  className="h-0 md:h-6 "
+                />
+              </div>   <img src="/img/pngegg(10).png" alt="My Image"  className="h-10 pr-2"   /> Create Ticket</h1>
 
           <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 h-[90%]">
             {/* ส่วนฟอร์มด้านซ้าย */}
@@ -134,6 +146,7 @@ const Createticket = () => {
                 className="border rounded w-full p-2 mb-4 text-gray-800"
                 required
               />
+
               <div>
                 <input
                   name="filefolder"
@@ -180,6 +193,7 @@ const Createticket = () => {
                 />
               </div>
             </div>
+
           </div>
         </div>
       </div>
