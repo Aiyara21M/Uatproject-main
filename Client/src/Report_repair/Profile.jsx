@@ -44,6 +44,10 @@ export default function Profile() {
         
     }, []);
 
+    if (!profileData) {
+        return <div>Loading...</div>; // สามารถใช้หน้าจอ loading หรือข้อความบอกผู้ใช้ได้
+    }
+
     const age = calculateAge(profileData.birthdate); 
 
     return (
@@ -52,7 +56,7 @@ export default function Profile() {
     {/* Left Section for Profile Information */}
     <div className="flex flex-col bg-gradient-to-r from-gray-700 to-gray-500 p-4 text-white w-full md:w-[30%] items-center p-6">
       <img 
-        src={`${profileData.profileimg}`} 
+        src={profileData.profileimg} 
         className="w-32 h-32 rounded-full border-4 border-gray-500" 
         alt={`Profile`} 
       />
@@ -67,29 +71,29 @@ export default function Profile() {
     </div>
 
     {/* Right Section for Address and Contact Information */}
-    <div className="flex flex-col  w-full md:w-[70%] p-8">
+    <div className="flex flex-col  w-full md:w-[70%] p-8 overflow-auto">
       <h3 className="text-xl font-semibold text-gray-800">ข้อมูลที่อยู่</h3>
-      <p className='mt-2'>{`ที่อยู่: ${profileData.address}`}</p>
-      <p>{`เขต: ${profileData.district}`}</p>
-      <p>{`แขวง: ${profileData.subdistrict}`}</p>
-      <p>{`หมู่: ${profileData.village}`}</p>
-      <p>{`ถนน: ${profileData.road}`}</p>
-      <p>{`จังหวัด: ${profileData.county}`}</p>
-      <p>{`รหัสไปรษณีย์: ${profileData.postalCode}`}</p>
+      <p className='mt-2'>ที่อยู่: {profileData.address}</p>
+      <p>เขต: {profileData.district}</p>
+      <p>แขวง: {profileData.subdistrict}</p>
+      <p>หมู่: {profileData.village}</p>
+      <p>ถนน: {profileData.road}</p>
+      <p>จังหวัด: {profileData.county}</p>
+      <p>รหัสไปรษณีย์: {profileData.postalCode}</p>
 
       <hr className="mt-6 border-t-2 border-gray-400" />
 
       <h3 className="text-xl font-semibold mt-6 text-gray-800">การติดต่อ</h3>
-      <p className='mt-2'>{`Email: ${profileData.email}`}</p>
-      <p>{`เบอร์โทร: ${profileData.phone}`}</p>
-      <p>{`Facebook: ${profileData.facebook}`}</p>
-      <p>{`Line: ${profileData.line}`}</p>
+      <p className='mt-2'>Email: {profileData.email}</p>
+      <p>เบอร์โทร: {profileData.phone}</p>
+      <p>Facebook: {profileData.facebook}</p>
+      <p>Line: {profileData.line}</p>
 
       <hr className="mt-6 border-t-2 border-gray-400" />
       <h3 className="text-xl font-semibold mt-6 text-gray-800">วุฒิการศึกษา</h3>
-      <p className='mt-2'>{`สถาบันการศึกษา: โรงเรียนวิทยาคม`}</p>
-      <p>{`เกรดเฉลี่ย: 1.1`}</p>
-      <p>{`วุฒิ: ม.ปลาย`}</p>
+      <p className='mt-2'>สถาบันการศึกษา: โรงเรียนวิทยาคม</p>
+      <p>เกรดเฉลี่ย: 1.1</p>
+      <p>วุฒิ: ม.ปลาย</p>
     </div>
   </div>
 </div>

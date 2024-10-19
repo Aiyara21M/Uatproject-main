@@ -73,46 +73,44 @@ exports.GetTicket = async (req, res) => {
   exports.GetTicketID = async (req, res) => {
     try {
   
-  
-
       const data = req.body.id.split('-');
       const type=data[0]
       const id=data[1]
-      const dbSearch= type == 'Mer__'? 'worklistmechanical':'worklistcomputer'
+      const dbSearch = type == 'Mer__'? 'worklistmechanical':'worklistcomputer'
 
         const ticket = await mongoose.connection.db
         .collection(dbSearch)
         .aggregate([
-            {
+          {
               $match:{
-                "_id" : new ObjectId(id)
+                  "_id" : new ObjectId(id)
             }
           },
           { $unwind: { path: "$Audilog", preserveNullAndEmptyArrays: true } },
           {$sort:{
-              "Audilog.ModifyDate" :1
+                  "Audilog.ModifyDate" :1
           }},
           { $lookup: { from: "profiles", localField: "Audilog.User", foreignField: "employeeid", as: "Audilog.User" } },
-           { $unwind: { path: "$Audilog.User", preserveNullAndEmptyArrays: true } },
+          { $unwind: { path: "$Audilog.User", preserveNullAndEmptyArrays: true } },
           { $lookup: { from: "departments", localField: "Audilog.UserDepartment", foreignField: "_id", as: "Audilog.UserDepartment" } },
-           { $unwind: { path: "$Audilog.UserDepartment", preserveNullAndEmptyArrays: true } },
-           {
+          { $unwind: { path: "$Audilog.UserDepartment", preserveNullAndEmptyArrays: true } },
+          {
                $addFields:{
-                   "Audilog.User" : {$concat:["$Audilog.User.firstname"," ","$Audilog.User.lastname"]},
-                    "Audilog.profileimg":"$Audilog.User.profileimg",
+                  "Audilog.User" : {$concat:["$Audilog.User.firstname"," ","$Audilog.User.lastname"]},
+                  "Audilog.profileimg":"$Audilog.User.profileimg",
                   "Audilog.UserDepartment":"$Audilog.UserDepartment.department"
                }
-           },
-           {
+          },
+          {
                $group:{
-                   _id:"$_id",
-                   "TicketNumber" :{$first:"$TicketNumber"},
-                   Audilog:{$push:"$Audilog"},
-                   HeadContent:{$first:"$HeadContent"},
-                     CreateDate:{$first:"$CreateDate"},
-                     "Phone" : {$first:"$Phone"}
+                  _id:"$_id",
+                  "TicketNumber" :{$first:"$TicketNumber"},
+                  Audilog:{$push:"$Audilog"},
+                  HeadContent:{$first:"$HeadContent"},
+                  CreateDate:{$first:"$CreateDate"},
+                  "Phone" : {$first:"$Phone"}
                }
-           }
+          }
         ])
         .toArray()
 

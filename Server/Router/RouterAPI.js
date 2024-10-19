@@ -8,6 +8,7 @@ const { checktoken } = require('../controller/Auth');
 const { GetIP } = require('../controller/GetIP');
 const { GetTicket, GetTicketID } = require('../controller/GetTicket');
 const { UpdateTicket } = require('../controller/UpdateTicket');
+const { GetDepartments, getLogDepart,getDepartEdit } = require('../controller/GetValue');
 
 
 
@@ -21,4 +22,9 @@ router.get('/ip', GetIP);
 router.post('/ticket',checktoken, GetTicket);
 router.post('/getTicket',checktoken, GetTicketID);
 router.post('/UpdateTicket',checktoken,upload.single('filefolder'), UpdateTicket);
+router.get('/getDepartments',checktoken, GetDepartments);
+router.post('/getLogDepart',checktoken, getLogDepart);
+router.post('/getDepartEdit',checktoken, getDepartEdit);
+
+
 module.exports = router;

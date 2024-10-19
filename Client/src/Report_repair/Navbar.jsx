@@ -12,7 +12,6 @@ export default function Navbar() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-
   useEffect(() => {
     // Listen for alerts
     socket.on("Getalert", (data) => {
@@ -26,7 +25,6 @@ export default function Navbar() {
   }, []);
 
   const [notifications, setNotifications] = useState([
-   
     // Add more notifications as needed
   ]);
 
@@ -43,12 +41,30 @@ export default function Navbar() {
   const RepairTicket = useRef(null);
   const Managedata = useRef(null);
   const Dashboard = useRef(null);
+
   const closeMenu = () => {
     setIsOpen(false);
+    Managedata.current.removeAttribute("open");
+    RepairTicket.current.removeAttribute("open");
+    Dashboard.current.removeAttribute("open");
   };
-  const [isRepairTicketOpen, setIsRepairTicketOpen] = useState(false);
-  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
-  const [isManagedataOpen, setIsManagedataOpen] = useState(false);
+
+  const closeMenuOnly = () => {
+    setIsOpen(false);
+  };
+
+  const OpenDashboard = () => {
+    Managedata.current.removeAttribute("open");
+    RepairTicket.current.removeAttribute("open");
+  };
+  const OpenManagedata = () => {
+    RepairTicket.current.removeAttribute("open");
+    Dashboard.current.removeAttribute("open");
+  };
+  const OpenRepairTicket = () => {
+    Dashboard.current.removeAttribute("open");
+    Managedata.current.removeAttribute("open");
+  };
 
   const closeAllMenus = (event) => {
     if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -63,25 +79,6 @@ export default function Navbar() {
     if (profileRef.current && !profileRef.current.contains(event.target)) {
       setIsProfileOpen(false);
     }
-
-
-    if (RepairTicket.current && !RepairTicket.current.contains(event.target)) {
-      RepairTicket.current.removeAttribute("open");
-    }
-  
-    // ปิดเมนู `Dashboard` หากคลิกนอกเมนู
-    if (Dashboard.current && !Dashboard.current.contains(event.target)) {
-      Dashboard.current.removeAttribute("open");
-    }
-  
-    // ปิดเมนู `Managedata` หากคลิกนอกเมนู
-    if (Managedata.current && !Managedata.current.contains(event.target)) {
-      Managedata.current.removeAttribute("open");
-    }
-
-
-   
-    
   };
 
   useEffect(() => {
@@ -91,15 +88,12 @@ export default function Navbar() {
     };
   }, []);
 
-
-
-
   if (!getUser()) {
     return null;
   }
 
   return (
-    <nav className="sticky top-0 bg-white  z-50  hover:shadow-l md:rounded-full transition-all duration-100  border-0 border-b-2  border-b-gray-900 shadow-inner md:mx-4 ">
+    <nav className="sticky top-0 bg-white  z-50  hover:shadow-l transition-all duration-100  border-0 border-b-2  border-b-gray-900 shadow-inner ">
       <div className="mx-auto max-w-7xl px-2 px-6 px-8">
         <div className="relative flex h-16 items-center justify-between font-athiti">
           {/* Mobile Menu Button */}
@@ -130,7 +124,7 @@ export default function Navbar() {
           {/* Notification and Profile Menu */}
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             {/* Notifications Button */}
-            <div className="relative" ref={notificationsRef}>
+            <div className="relative " ref={notificationsRef}>
               <button
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
                 className="relative rounded-full bg-gray-900 p-2 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-800 transition duration-150 ease-in-out"
@@ -146,7 +140,7 @@ export default function Navbar() {
 
               {/* Notifications Dropdown */}
               {isNotificationsOpen && (
-                <div className="absolute right-[-40px] w-[90vw] sm:w-[400px] sm:right-0 top-full mt-2 w-96 bg-white rounded-md shadow-lg z-50">
+                <div className="absolute  w-[90vw] sm:w-[400px] right-[-80px] sm:right-0 top-full mt-2 w-96 bg-white rounded-md shadow-lg z-50">
                   <header className="flex justify-between items-center p-2 border-b">
                     <h1 className="text-lg font-semibold text-gray-800">
                       Notifications
@@ -222,7 +216,7 @@ export default function Navbar() {
                 <span className="sr-only">Open user menu</span>
                 <img
                   alt=""
-                  src={`${profileimg}`}
+                  src={profileimg}
                   className="h-8 w-8 rounded-full"
                 />
               </button>
@@ -247,7 +241,7 @@ export default function Navbar() {
                     onClick={(e) => {
                       e.preventDefault;
                       setIsProfileOpen(false);
-                      navigate("/settings");
+                      navigate("#");
                     }}
                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
                   >
@@ -270,10 +264,10 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Menu */}
+      {/* Navigation Menu */}
       <div
         ref={menuRef}
-        className={`fixed inset-y-0 left-0  w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out transform ${
+        className={`fixed inset-y-0 left-0  w-64 bg-white shadow-lg transition-transform duration-300 ease-in-out transform overflow-auto  ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
@@ -285,12 +279,12 @@ export default function Navbar() {
               navigate("/index");
               closeMenu();
             }}
-            className="text-gray-800 font-semibold hover:bg-gray-900 hover:text-white font-medium block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti"
+            className="select-none text-gray-800 font-semibold hover:bg-gray-900 hover:text-white font-medium block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti"
           >
             Home
           </a>
 
-          <details ref={Managedata}  >
+          <details ref={Managedata} onClick={OpenManagedata}>
             <summary
               className="text-gray-800 font-semibold hover:bg-gray-900 hover:text-white font-medium block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400"
               style={{
@@ -298,54 +292,78 @@ export default function Navbar() {
                 WebkitAppearance: "none",
                 MozAppearance: "none",
                 appearance: "none",
-              }} >
-              <div className="">Manage data</div>
+              }}
+            >
+              <div className="select-none">Manage data</div>
             </summary>
             <div className="m-3 md:w-48 ">
-              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+              <div
+                onClick={() => {
+                  closeMenuOnly();
+                  navigate(`#`);
+                }}
+                className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer"
+              >
                 <div className="absolute top-1 right-2"></div>
                 <img
                   src="/img/pngegg.png"
                   alt="My Image"
                   className="h-5 pr-2"
                 />
-                <h3 className="font-semibold">Employee</h3>
+                <h3 className="font-semibold select-none">Employee</h3>
               </div>
 
-              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+              <div
+                onClick={() => {
+                  closeMenuOnly();
+                  navigate(`/departments`);
+                }}
+                className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer"
+              >
                 <div className="absolute top-1 right-2"></div>
                 <img
                   src="/img/department.png"
                   alt="My Image"
                   className="h-5 pr-2"
                 />
-                <h3 className="font-semibold">Department</h3>
+                <h3 className="font-semibold select-none">Department</h3>
               </div>
 
-              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+              <div
+                onClick={() => {
+                  closeMenuOnly();
+                  navigate(`#`);
+                }}
+                className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer"
+              >
                 <div className="absolute top-1 right-2"></div>
                 <img
                   src="/img/pngegg(1).png"
                   alt="My Image"
                   className="h-5 pr-2"
                 />
-                <h3 className="font-semibold">Sex</h3>
+                <h3 className="font-semibold select-none">Sex</h3>
               </div>
 
-              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+              <div
+                onClick={() => {
+                  closeMenuOnly();
+                  navigate(`#`);
+                }}
+                className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer"
+              >
                 <div className="absolute top-1 right-2"></div>
                 <img
                   src="/img/pngegg(5).png"
                   alt="My Image"
                   className="h-5 pr-2"
                 />
-                <h3 className="font-semibold">Address</h3>
+                <h3 className="font-semibold select-none">Address</h3>
               </div>
             </div>
           </details>
 
-         
-          <details ref={RepairTicket}  >
+          <details ref={RepairTicket} onClick={OpenRepairTicket}>
             <summary
               className="text-gray-800 font-semibold hover:bg-gray-900 hover:text-white font-medium block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400"
               style={{
@@ -353,51 +371,99 @@ export default function Navbar() {
                 WebkitAppearance: "none",
                 MozAppearance: "none",
                 appearance: "none",
-              }} >
-              <div className="">Repair Ticket</div>
+              }}
+            >
+              <div className="select-none">Repair Ticket</div>
             </summary>
+
             <div className="m-3 md:w-48 ">
-              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+              <div
+                onClick={() => {
+                  closeMenuOnly();
+                  navigate(`/createticket`);
+                }}
+                className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer"
+              >
                 <div className="absolute top-1 right-2"></div>
                 <img
-                  src="/img/pngegg.png"
+                  src="/img/pngegg(10).png"
                   alt="My Image"
                   className="h-5 pr-2"
                 />
-                <h3 className="font-semibold">Employee</h3>
+                <h3 className="font-semibold select-none">Create Ticket</h3>
               </div>
 
-              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+              <div
+                onClick={() => {
+                  closeMenuOnly();
+                  navigate(`#`);
+                }}
+                className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer"
+              >
                 <div className="absolute top-1 right-2"></div>
                 <img
-                  src="/img/department.png"
+                  src="/img/travel-agent.png"
                   alt="My Image"
                   className="h-5 pr-2"
                 />
-                <h3 className="font-semibold">Department</h3>
+                <h3 className="font-semibold select-none">Your Tickets</h3>
               </div>
 
-              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
+              <div
+                onClick={() => {
+                  closeMenuOnly();
+                  navigate(`/Technician`);
+                }}
+                className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer"
+              >
                 <div className="absolute top-1 right-2"></div>
                 <img
-                  src="/img/pngegg(1).png"
+                  src="/img/work-list.png"
                   alt="My Image"
                   className="h-5 pr-2"
                 />
-                <h3 className="font-semibold">Sex</h3>
-              </div>
-
-              <div className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer">
-                <div className="absolute top-1 right-2"></div>
-                <img
-                  src="/img/pngegg(5).png"
-                  alt="My Image"
-                  className="h-5 pr-2"
-                />
-                <h3 className="font-semibold">Address</h3>
+                <h3 className="font-semibold select-none">Work List</h3>
               </div>
             </div>
           </details>
+
+          <details ref={Dashboard} onClick={OpenDashboard}>
+            <summary
+              className="text-gray-800 font-semibold hover:bg-gray-900 hover:text-white font-medium block rounded-md px-4 py-2 text-lg transition duration-150 ease-in-out tracking-wide cursor-pointer font-athiti  focus:outline-none focus:ring-2 focus:ring-inset focus:ring-gray-400"
+              style={{
+                listStyle: "none",
+                WebkitAppearance: "none",
+                MozAppearance: "none",
+                appearance: "none",
+              }}
+            >
+              <div className="select-none">Dashboard</div>
+            </summary>
+
+            <div className="m-3 md:w-48 ">
+
+              <div
+                onClick={() => {
+                  closeMenuOnly();
+                  navigate(`#`);
+                }}
+                className="flex flex-row items-center  bg-white pl-5 rounded-lg shadow mb-1 relative h-10 cursor-pointer"
+              >
+                <div className="absolute top-1 right-2"></div>
+                <img
+                  src="/img/pngegg(7).png"
+                  alt="My Image"
+                  className="h-5 pr-2"
+                />
+                <h3 className="font-semibold select-none">Dashboard</h3>
+              </div>
+
+
+
+            </div>
+          </details>
+
+
 
 
 

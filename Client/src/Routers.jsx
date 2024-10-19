@@ -8,7 +8,9 @@ import Technician from './Report_repair/Technician';
 import Computer from './Report_repair/Computer';
 import TicketNumber from './Report_repair/TicketNumber';
 import Createticket from './Report_repair/Createticket';
-import Menu_st from './Settings/Menu_Index';
+
+import Departments from './Managedata/Departments';
+
 
 export default function Routers() {
 
@@ -24,8 +26,7 @@ export default function Routers() {
             <Route path="/Technician/:id" element={<TicketNumber />} />
             <Route path="/computer" element={<Computer/>} />
             <Route path="/createticket" element={<Createticket/>} />
-            <Route path="/settings" element={ <Menu_st/>} />
-
+            <Route path="/departments" element={ <Departments/>} />
           </Routes>
         </BrowserRouter>
       );
