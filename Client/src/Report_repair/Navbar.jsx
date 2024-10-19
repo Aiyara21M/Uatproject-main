@@ -140,7 +140,7 @@ export default function Navbar() {
 
               {/* Notifications Dropdown */}
               {isNotificationsOpen && (
-                <div className="absolute  w-[90vw] sm:w-[400px] right-[-80px] sm:right-0 top-full mt-2 w-96 bg-white rounded-md shadow-lg z-50">
+                <div className="absolute  w-[90vw] sm:w-[400px] right-[-80px] sm:right-0 top-full mt-2 w-96 bg-white rounded-md shadow-lg z-50 select-none">
                   <header className="flex justify-between items-center p-2 border-b">
                     <h1 className="text-lg font-semibold text-gray-800">
                       Notifications
@@ -157,9 +157,9 @@ export default function Navbar() {
                   <div className="p-2 max-h-64 overflow-y-auto">
                     {notifications.length > 0 ? (
                       notifications.map((notification) => (
-                        <article
+                        <article 
                           key={notification.id}
-                          className={`flex items-start p-2 ${
+                          className={`flex items-start p-2 cursor-pointer ${
                             notification.unread ? "bg-gray-100" : ""
                           }`}
                           onClick={(e) => {
@@ -198,7 +198,7 @@ export default function Navbar() {
                         </article>
                       ))
                     ) : (
-                      <div className="text-center text-gray-500">
+                      <div className="text-center text-gray-500 cursor-pointer">
                         No notifications
                       </div>
                     )}
@@ -223,8 +223,8 @@ export default function Navbar() {
 
               {/* Profile Dropdown */}
               {isProfileOpen && (
-                <div className="absolute right-0 top-full mt-2 w-48 origin-top-right rounded-md  bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none">
-                  <div className="p-2 text-gray-700 font-semibold">
+                <div className="absolute right-0 top-full mt-2 w-48 origin-top-right rounded-md  bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 transition focus:outline-none select-none">
+                  <div className="p-2 text-gray-700 font-semibold cursor-default  m-1  text-gray-700 border-b ">
                     User Menu
                   </div>
                   <a
@@ -233,7 +233,7 @@ export default function Navbar() {
                       setIsProfileOpen(false);
                       navigate("/profile");
                     }}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out cursor-pointer"
                   >
                     Your Profile
                   </a>
@@ -243,7 +243,7 @@ export default function Navbar() {
                       setIsProfileOpen(false);
                       navigate("#");
                     }}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out cursor-pointer"
                   >
                     Settings
                   </a>
@@ -253,7 +253,7 @@ export default function Navbar() {
                       setIsProfileOpen(false);
                       logout(() => navigate("/"));
                     }}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out"
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-150 ease-in-out cursor-pointer"
                   >
                     Sign out
                   </button>

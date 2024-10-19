@@ -107,7 +107,7 @@ const Departments = () => {
       <div className="flex flex-col h-full w-full bg-gray-100 items-center justify-center">
         <div className="bg-white w-full md:w-[85%] h-[98%] overflow-auto rounded-lg relative">
         <div className="absolute top-6 right-[6%]">
-        <img src="/img/add.png"  alt="My Image"  className="h-6 pr-2"
+        <img src="/img/add.png"  alt="My Image"  className="h-6 pr-2 cursor-pointer"
             onClick={()=>{setFormAdd({id:UUID,NameDepart:"",Code:""})}} 
                       />
           </div>
@@ -141,13 +141,14 @@ const Departments = () => {
                   <div className="flex items-center justify-center p-2 md:col-span-2">{depart.createdAt}</div>
                   <div className="flex items-center justify-center md:justify-start p-2 md:col-span-3 md:pl-8 lg:pl-16">{depart.createUser}</div> 
                   <div className="flex items-center justify-center p-2 md:col-span-1">                   
-                  <img src="/img/pngegg(12).png" alt="My Image" className="h-5 pr-2" onClick={() => getDataEdit(depart._id)}/>
+                  <img src="/img/pngegg(12).png" alt="My Image" className="h-5 pr-2 hover:-translate-y-1 cursor-pointer" onClick={() => getDataEdit(depart._id)}/>
                   </div>
                   <div className="flex items-center justify-center p-2 md:col-span-1" >        
-                  <img src="/img/pngegg(18).png" alt="My Image" className="h-5 pr-2" onClick={() => getLog(depart._id)}/>
+                  <img src="/img/pngegg(18).png" alt="My Image" className="h-5 pr-2 hover:-translate-y-1 cursor-pointer" onClick={() => getLog(depart._id)}/>
                   </div>
                 </div>
               ))}
+
 
               </div>
           </div>
@@ -156,9 +157,11 @@ const Departments = () => {
 
         {/* FromAdd */}
   {formAdd && (
-  <div 
-  ref={formAddRef}  
-  className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-200 h-[250px] w-[400px] overflow-auto p-4 rounded-md shadow-2xl">
+   <div 
+   ref={formAddRef}
+   className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-200 h-[250px] w-[400px] overflow-auto p-4 rounded-md shadow-2xl 
+   ${formAdd ? 'slide-in-active' : 'slide-out-active'}`}
+ >
 <div className="bg-gray-900 text-white w-[100%] font-semibold p-2 rounded-md">Add Department</div>
 <div  className="flex flex-col items-center justify-center rounded-md">
 <span className="w-[90%] mt-3">Value</span>
